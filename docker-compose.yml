@@ -1,0 +1,50 @@
+#version: '3.8'
+services:
+  #PHP Application
+  app:
+    build: .
+    container_name: restaurant_app      # Docker auto-generates
+    # restart: unless-stopped             # Production only** 
+    # working_dir: /var/www               # Set in Dockerfile already
+    volumes:
+      - ./:/var/www
+    depends_on:
+      - db
+
+
+  # Nginx Web Server
+  webserver:
+    image: nginx:alpine
+    container_name: restaurant_webserver 
+    # restart: unless-stopped  
+    ports:
+      - "8000:80"
+    volumes:
+      - ./:/var/www
+      - ./docker/nginx/default.conf:/etc/nginx/conf.d/default.conf
+    depends_on:
+      - app
+
+
+  # MySQL database
+  db:
+    image: mysql:8.0
+    container_name: restaurant_db        
+    # restart: unless-stopped               
+    environment:
+      MYSQL_DATABASE: restaurant_scheduler
+      MYSQL_ROOT_PASSWORD: secret
+      MYSQL_USER: laravel
+      MYSQL_PASSWORD: secret
+    # ports:                                # Only if connecting from host machine
+    #   - "3306:3306"
+    volumes:
+      - dbdata:/var/lib/mysql
+
+# Docker Compose auto-creates default network
+# networks:
+#   restaurant_network:
+#     driver: bridge
+
+volumes:
+  dbdata:
