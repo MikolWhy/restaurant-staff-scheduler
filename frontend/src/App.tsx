@@ -1,6 +1,8 @@
 import { useState, useEffect } from 'react';
 import type { Staff, Shift } from './types';
-import { getShifts, getStaff } from './api';
+import { getShifts, getStaff , addStaff} from './api';
+import { StaffForm } from './components/StaffForm';
+import { StaffList } from './components/StaffList';
 import './App.css';
 
 function App() {
@@ -33,6 +35,17 @@ function App() {
     loadData();
   }, []);
 
+  // create staff
+  const handleAddStaff = async (data: {
+    name: string;
+    role: string;
+    phone_number: string;
+  }) => {
+    const newStaff = await addStaff(data);
+    setStaff((prev) => [...prev, newStaff]);
+
+  }
+  
   if (loading) return <div className="container">Loading...</div>;
   if (error) return <div className="container error">{error}</div>;
 
@@ -44,8 +57,9 @@ function App() {
 
       <section>
         <h2>Staff Management</h2>
-        <p>Staff count: {staff.length}</p>
-        {/* StaffList and StaffForm go here soon */}
+        <StaffList staff={staff} />
+        <StaffForm onSubmit={handleAddStaff} />
+        
       </section>
 
       <section>

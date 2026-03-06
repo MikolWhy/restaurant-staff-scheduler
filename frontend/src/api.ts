@@ -18,7 +18,9 @@ export async function addStaff(data: {
 }): Promise<Staff> {
   const response = await fetch(`${API_BASE}/staff`, {
     method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
+    headers: { 'Content-Type': 'application/json',
+      'Accept': 'application/json',
+     },
     body: JSON.stringify(data),
   });
   if (!response.ok) {
@@ -48,7 +50,9 @@ export async function addShift(data: {
 }): Promise<Shift> {
   const response = await fetch(`${API_BASE}/shifts`, {
     method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
+    headers: { 'Content-Type': 'application/json' ,
+      'Accept': 'application/json',
+    },
     body: JSON.stringify(data),
   });
   if (!response.ok) {
@@ -68,7 +72,9 @@ export async function updateShift(
 ): Promise<Shift> {
   const response = await fetch(`${API_BASE}/shifts/${shiftId}`, {
     method: 'PATCH',
-    headers: { 'Content-Type': 'application/json' },
+    headers: { 'Content-Type': 'application/json',
+      'Accept': 'application/json',
+     },
     body: JSON.stringify({ staff_id: staffId }),
   });
   if (!response.ok) {
