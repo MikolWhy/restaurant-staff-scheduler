@@ -2,10 +2,10 @@
 
 namespace Database\Seeders;
 
-#use App\Models\User;
+//use App\Models\User;
 use App\Models\Staff;
 use App\Models\Shift;
-#use Illuminate\Database\Console\Seeds\WithoutModelEvents;
+//use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
 class DatabaseSeeder extends Seeder
@@ -15,7 +15,7 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        #create sample staff for testing
+        // create sample staff for testing
         $steven = Staff::create([
             'name' => 'Steven Sample',
             'role' => 'manager',
@@ -34,7 +34,7 @@ class DatabaseSeeder extends Seeder
             'phone_number' => '5550101234',
         ]);
 
-          # Create sample shifts
+          // Create sample shifts
           Shift::create([
             'staff_id' => $steven->id,
             'day' => '2026-03-10',
@@ -51,7 +51,7 @@ class DatabaseSeeder extends Seeder
             'role' => 'server',
         ]);
 
-        # Unassigned shift (open for assignment)
+        //Unassigned shift (open for assignment)
         Shift::create([
             'staff_id' => null,
             'day' => '2026-03-11',

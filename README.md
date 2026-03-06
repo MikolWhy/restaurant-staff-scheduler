@@ -1,59 +1,264 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# Restaurant Staff Scheduling System
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+A full-stack web application for restaurant managers to manage staff members and schedule shifts.
 
-## About Laravel
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+## Tech Stack
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+| Layer | Technology | Version |
+|-------|------------|---------|
+| Backend | Laravel | 12.53.0 |
+| Backend | PHP | 8.3 |
+| Database | MySQL | 8.0 |
+| Frontend | React | 19.2.4 |
+| Frontend | TypeScript | 5.x |
+| Frontend | Vite | 7.x |
+| Infrastructure | Docker Compose | 2.x |
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+## Features
 
-## Learning Laravel
+- Create and list staff members (name, role, phone number)
+- Create and list shifts (day, start time, end time, role)
+- Assign/reassign staff to shifts
+- Staff dropdown filters by matching role
+- Form validation with error messages
+- Responsive design (mobile + desktop)
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework. You can also check out [Laravel Learn](https://laravel.com/learn), where you will be guided through building a modern Laravel application.
+## Using the App
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+Once running, open **http://localhost:5173** in your browser.
 
-## Laravel Sponsors
+### Staff
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+Use the **Staff** tab to view all staff members and add new ones. Field constraints:
 
-### Premium Partners
+| Field | Constraint |
+|---|---|
+| Name | Letters, spaces, hyphens, and apostrophes only |
+| Role | Must be one of: Server, Cook, Manager |
+| Phone | 10–15 digits, numbers only |
 
-- **[Vehikl](https://vehikl.com)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Redberry](https://redberry.international/laravel-development)**
-- **[Active Logic](https://activelogic.com)**
+### Shifts
 
-## Contributing
+Use the **Shifts** tab to create shifts and assign staff to them.
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+- **Day** — must be today or a future date; past dates are rejected
+- **Start / End Time** — must be valid times; end time must be after start time
+- **Role Needed** — determines which staff appear in the assignment dropdown; only staff with a matching role are shown
+- **Assign To** — optional; a shift can be saved unassigned and assigned later via the dropdown in the shift list
 
-## Code of Conduct
+### Date & Time Input Browser Differences
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+The date and time fields use native browser inputs (`type="date"` / `type="time"`), so their appearance varies:
 
-## Security Vulnerabilities
+| Browser | Behaviour |
+|---|---|
+| Chrome (Windows/Linux) | Segement Scroller - click a segment (hour, minute) then type or scroll |
+| Firefox | Free-text field — type directly in `HH:MM` format after clicking |
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
 
-## License
+You can always type directly into the Chrome spinner by clicking the hours segment and typing the digits, then Tab to minutes.
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+## Quick Start
+
+### Prerequisites
+
+- Docker Desktop (running)
+- Node.js 18+ and npm
+
+### Setup
+```bash
+# 1. Clone repository
+git clone https://github.com/MikolWhy/restaurant-staff-scheduler.git
+cd restaurant-staff-scheduler
+
+# 2. Start backend containers (PHP, MySQL, nginx)
+docker compose up -d --build
+
+# 3. Run database migrations and seed sample data (or remove for production)
+docker compose exec app php artisan migrate --seed
+
+# 4. Install and start frontend
+cd frontend
+npm install
+npm run dev
+```
+
+### Access
+
+| Service | URL |
+|---------|-----|
+| Frontend | http://localhost:5173 |
+| Backend API | http://localhost:8000/api |
+
+## API Endpoints
+
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| GET | /api/staff | List all staff members |
+| POST | /api/staff | Create a staff member |
+| GET | /api/shifts | List all shifts (includes assigned staff) |
+| POST | /api/shifts | Create a shift |
+| PATCH | /api/shifts/{id} | Assign/unassign staff to a shift |
+
+
+## Useful Commands
+
+### Testing
+```bash
+# Run all tests (Feature + Unit)
+docker compose exec app php artisan test
+
+# Run specific test file
+docker compose exec app php artisan test --filter=StaffApiTest
+docker compose exec app php artisan test --filter=ShiftApiTest
+docker compose exec app php artisan test --filter=StoreStaffRequestTest
+```
+
+### Database
+```bash
+# Reset database with fresh sample data
+docker compose exec app php artisan migrate:fresh --seed
+
+# Run migrations only
+docker compose exec app php artisan migrate
+
+# Run seeder only
+docker compose exec app php artisan db:seed
+```
+
+### Docker
+```bash
+# Start containers
+docker compose up -d --build
+
+# Stop containers
+docker compose down
+
+# Stop and delete database volume
+docker compose down -v
+
+# View logs
+docker compose logs -f
+```
+
+### Debugging
+```bash
+# Laravel interactive shell
+docker compose exec app php artisan tinker
+
+# View registered routes
+docker compose exec app php artisan route:list
+
+# Clear all caches
+docker compose exec app php artisan optimize:clear
+```
+
+## Project Structure
+```
+restaurant-staff-scheduler/
+├── app/
+│   ├── Http/
+│   │   ├── Controllers/
+│   │   │   ├── StaffController.php
+│   │   │   └── ShiftController.php
+│   │   └── Requests/
+│   │       ├── StoreStaffRequest.php
+│   │       ├── StoreShiftRequest.php
+│   │       └── UpdateShiftRequest.php
+│   └── Models/
+│       ├── Staff.php
+│       └── Shift.php
+├── database/
+│   ├── migrations/
+│   │   ├── xxxx_create_staff_table.php
+│   │   └── xxxx_create_shifts_table.php
+│   └── seeders/
+│       └── DatabaseSeeder.php
+├── routes/
+│   └── api.php
+├── tests/
+│   ├── Feature/
+│   │   ├── StaffApiTest.php
+│   │   └── ShiftApiTest.php
+│   └── Unit/
+│       └── StoreStaffRequestTest.php
+├── frontend/
+│   ├── src/
+│   │   ├── components/
+│   │   │   ├── StaffList.tsx
+│   │   │   ├── StaffForm.tsx
+│   │   │   ├── ShiftList.tsx
+│   │   │   └── ShiftForm.tsx
+│   │   ├── api.ts
+│   │   ├── types.ts
+│   │   ├── App.tsx
+│   │   └── App.css
+│   ├── package.json
+│   └── vite.config.ts
+├── docker-compose.yml
+├── Dockerfile
+└── README.md
+```
+
+## Validation Rules
+
+### Staff
+| Field | Rules |
+|-------|-------|
+| name | Required, letters/spaces/hyphens/apostrophes only |
+| role | Required, must be: server, cook, or manager |
+| phone_number | Required, 10–15 digits only |
+
+### Shift
+| Field | Rules |
+|-------|-------|
+| day | Required, cannot be in the past |
+| start_time | Required, HH:MM format |
+| end_time | Required, must be after start_time |
+| role | Required, must be: server, cook, or manager |
+| staff_id | Optional, must exist in staff table if provided |
+
+## Assumptions & Tradeoffs
+
+### Assumptions
+- No overnight Shifts (eg 11pm - 2am) but if need easily enabled by modifying a business rule.
+- Users will know how to operate the software (no specific instructions)
+- Single timezone operation
+- Phone Formats of Minimum 10, Max 15 for international numbers
+- Staff role should match shift role (enforced in UI dropdown filter)
+- Shifts can exist unassigned (open shifts needing coverage)
+
+### Tradeoffs
+| Decision | Rationale |
+|----------|-----------|
+| No edit/delete | Not specified in requirements |
+| No authentication | Explicitly out of scope per assignment |
+| Frontend validation only for UX | Backend validates for security; frontend catches most errors first |
+| Native date/time inputs | Simple, no extra dependencies; small click target is browser limitation |
+| No pagination | Acceptable for expected data size |
+
+### What I'd Add With More Time
+- Edit and delete functionality for staff and shifts (instead of relying on commands)
+- Backend validation that checks staff role matches shift role on assignment (the frontend dropdown already filters by role, but the API itself does not reject a mismatched `staff_id`) if you were to call directly via CURL
+- Scheduling conflict detection (overlapping shifts for same staff)
+- Date range filtering for shifts view
+- Information Page including some of the browser differences or fix to make it consistent (eg: Currently Chrome/Edge should allow the click/scroll inputs while FireFox etc may require click/type for inputs.)
+
+## Development Notes
+
+- Used Laravel Form Requests for validation (clean separation from controllers)
+- Used Eloquent relationships (Staff hasMany Shifts, Shift belongsTo Staff)
+- Used eager loading (`Shift::with('staff')`) to avoid N+1 queries
+- Frontend uses controlled components with React useState
+- API errors parsed from Laravel's `error.errors` format for field-specific messages
+- Docker setup uses PHP-FPM + nginx + MySQL (production-like architecture)
+
+## Time Spent
+
+Approximately 6 hours spaced over 1.5 days:
+- Preparation before starting the project: PHP, Laravel, and other useful readings
+- Environment setup (Docker, Laravel, React): ~30 minutes
+- Backend API + validation + tests: ~2-3 hours
+- Frontend UI + styling: ~2-3 hours
+- Documentation, cleanup, bug-fixing, modifications: ~30 minutes

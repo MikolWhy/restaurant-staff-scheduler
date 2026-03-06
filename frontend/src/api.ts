@@ -1,3 +1,7 @@
+/**
+ * API client for restaurant scheduler
+ * All functions throw Error on failure for consistent handling
+ */
 import type { Staff, Shift } from './types';
 
 const API_BASE = '/api';
@@ -5,13 +9,13 @@ const API_BASE = '/api';
 // GET all staff from the API and Throws if the req fails
 export async function getStaff(): Promise<Staff[]> {
   const response = await fetch(`${API_BASE}/staff`);
-  if (!response.ok) throw new Error('Failed to fetch staff');
+  if (!response.ok) throw new Error('Failed to fetch staff data');
   return response.json();
 }
 
 // POST new staff member
 // data from form fields, returns the added staff or throws error
-export async function addStaff(data: {
+export async function createStaff(data: {
   name: string;
   role: string;
   phone_number: string;
@@ -27,7 +31,7 @@ export async function addStaff(data: {
     const error = await response.json();
     const message = error.errors
       ? Object.values(error.errors).flat().join(' ')
-      : error.message || 'Failed to add staff';
+      : error.message || 'Failed to create staff member';
     throw new Error(message);
   }
   return response.json();
@@ -36,12 +40,12 @@ export async function addStaff(data: {
 // GET all shifts from the API or throw on req fail
 export async function getShifts(): Promise<Shift[]> {
   const response = await fetch(`${API_BASE}/shifts`);
-  if (!response.ok) throw new Error('Failed to fetch shifts');
+  if (!response.ok) throw new Error('Failed to fetch shifts data');
   return response.json();
 }
 
 // POST a new shift, staff_id is optional for unassigned
-export async function addShift(data: {
+export async function createShift(data: {
   day: string;
   start_time: string;
   end_time: string;
@@ -59,7 +63,7 @@ export async function addShift(data: {
     const error = await response.json();
     const message = error.errors
       ? Object.values(error.errors).flat().join(' ')
-      : error.message || 'Failed to add shift';
+      : error.message || 'Failed to create shift';
     throw new Error(message);
   }
   return response.json();
@@ -77,6 +81,7 @@ export async function updateShift(
      },
     body: JSON.stringify({ staff_id: staffId }),
   });
+  // will throw default error or custom error message from API if req fails
   if (!response.ok) {
     const error = await response.json();
     const message = error.errors

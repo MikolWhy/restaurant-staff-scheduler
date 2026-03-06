@@ -12,7 +12,7 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 class StaffApiTest extends TestCase
 {
 
-    use refreshdatabase;
+    use RefreshDatabase;
    
     // checks if all staff members can be retrieved
     public function test_can_get_all_staff(): void

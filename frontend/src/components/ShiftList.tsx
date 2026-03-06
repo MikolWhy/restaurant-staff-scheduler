@@ -12,8 +12,13 @@ export function ShiftList({ shifts, staff, onAssign }: ShiftListProps) {
   }
 
   const handleAssignChange = async (shift: Shift, newStaffId: string) => {
-    const staffId = newStaffId ? Number(newStaffId) : null;
-    await onAssign(shift.id, staffId);
+    try {
+      const staffId = newStaffId ? Number(newStaffId) : null;
+      await onAssign(shift.id, staffId);
+    } catch (err) {
+      alert(err instanceof Error ? err.message : 'Failed to assign shift');
+    }
+    
   };
 
   // Format time for display (remove seconds if present)

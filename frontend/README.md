@@ -1,73 +1,60 @@
-# React + TypeScript + Vite
+# Restaurant Staff Scheduler — Frontend
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+React + TypeScript frontend for the Restaurant Staff Scheduling System. Communicates with the Laravel backend API to let restaurant managers manage staff and shifts.
 
-Currently, two official plugins are available:
+## Tech Stack
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+| Technology | Version |
+|------------|---------|
+| React | 19.x |
+| TypeScript | 5.x |
+| Vite | 7.x |
 
-## React Compiler
+## Getting Started
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+From the `frontend/` directory:
 
-## Expanding the ESLint configuration
-
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
-
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
-
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+```bash
+npm install
+npm run dev
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+The dev server starts at **http://localhost:5173** (or the next available port).
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+The backend API must be running at `http://localhost:8000`. See the [root README](../README.md) for Docker setup instructions.
 
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+## Available Scripts
+
+| Command | Description |
+|---------|-------------|
+| `npm run dev` | Start the Vite dev server with HMR |
+| `npm run build` | Type-check and produce a production build in `dist/` |
+| `npm run preview` | Preview the production build locally |
+| `npm run lint` | Run ESLint across all source files |
+
+## Project Structure
+
 ```
+src/
+├── components/
+│   ├── StaffList.tsx     # Displays the full staff roster
+│   ├── StaffForm.tsx     # Form to add a new staff member
+│   ├── ShiftList.tsx     # Displays all shifts with assigned staff
+│   └── ShiftForm.tsx     # Form to create a shift and assign staff
+├── api.ts                # Typed fetch wrappers for every API endpoint
+├── types.ts              # Shared TypeScript interfaces (Staff, Shift)
+├── App.tsx               # Root component — tab layout, state, data fetching
+└── App.css               # Global styles and responsive layout
+```
+
+## Features
+
+- View all staff members and add new ones (name, role, phone number)
+- View all shifts and create new ones (day, start/end time, role)
+- Assign or reassign a staff member to a shift via a role-filtered dropdown
+- Inline validation error messages sourced from the Laravel backend
+- Responsive layout — works on mobile and desktop
+
+## API Integration
+
+All backend calls are centralised in `api.ts`. The base URL is configured via the `VITE_API_URL` environment variable (defaults to `http://localhost:8000/api`). Errors returned by Laravel's validation layer (`422 Unprocessable Entity`) are parsed field-by-field and displayed next to the relevant form inputs.

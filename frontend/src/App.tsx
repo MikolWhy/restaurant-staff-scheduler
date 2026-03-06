@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import type { Staff, Shift } from './types';
-import { getShifts, getStaff , addStaff, addShift, updateShift} from './api';
+import { getShifts, getStaff , createStaff, createShift, updateShift} from './api';
 import { StaffForm } from './components/StaffForm';
 import { StaffList } from './components/StaffList';
 import { ShiftList } from './components/ShiftList';
@@ -38,28 +38,28 @@ function App() {
   }, []);
 
   // create staff
-  const handleAddStaff = async (data: {
+  const handleCreateStaff = async (data: {
     name: string;
     role: string;
     phone_number: string;
   }) => {
-    const newStaff = await addStaff(data);
+    const newStaff = await createStaff(data);
     setStaff((prev) => [...prev, newStaff]);
 
   }
 
-  const handleAddShift = async (data: {
+  const handleCreateShift = async (data: {
     day: string;
     start_time: string;
     end_time: string;
     role: string;
     staff_id?: number | null;
   }) => {
-    const newShift = await addShift(data);
+    const newShift = await createShift(data);
     setShifts((prev) => [...prev, newShift]);
   };
 
-  const handleUpdateShift = async (shiftId: number, staffId: number | null) => {
+  const handleAssignShift = async (shiftId: number, staffId: number | null) => {
     const updatedShift = await updateShift(shiftId, staffId);
     setShifts((prev) =>
       prev.map((s) => (s.id === shiftId ? updatedShift : s))
@@ -70,7 +70,7 @@ function App() {
   if (loading) return <div className="container">Loading...</div>;
   if (error) return <div className="container error">{error}</div>;
 
-  // Main layout: staff section and shifts section
+  // Layout for staff and shift management sections
 
   return (
     <div className="container">
@@ -79,7 +79,7 @@ function App() {
       <section>
         <h2>Staff Management</h2>
         <StaffList staff={staff} />
-        <StaffForm onSubmit={handleAddStaff} />
+        <StaffForm onSubmit={handleCreateStaff} />
         
       </section>
 
@@ -88,9 +88,9 @@ function App() {
         <ShiftList
           shifts={shifts}
           staff={staff}
-          onAssign={handleUpdateShift}
+          onAssign={handleAssignShift}
         />
-        <ShiftForm staff={staff} onSubmit={handleAddShift} />
+        <ShiftForm staff={staff} onSubmit={handleCreateShift} />
       </section>
     </div>
   );

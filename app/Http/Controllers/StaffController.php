@@ -1,5 +1,9 @@
 <?php
 
+/**
+ * Handles staff member CRUD operations.
+ * Currently supports: list all, create new.
+ */
 namespace App\Http\Controllers;
 
 use App\Http\Requests\StoreStaffRequest;

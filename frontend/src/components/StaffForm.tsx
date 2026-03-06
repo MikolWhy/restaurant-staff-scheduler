@@ -1,6 +1,9 @@
 import { useState } from 'react';
 import type { Role } from '../types';
 
+// type alias for FormSubmitEvent if want to switch out outdated FormEvent.
+//type FormSubmitEvent = React.SyntheticEvent<HTMLFormElement, SubmitEvent>;
+
 interface StaffFormProps {
   onSubmit: (data: { name: string; role: Role; phone_number: string }) => Promise<void>;
 }
@@ -23,7 +26,8 @@ export function StaffForm({ onSubmit }: StaffFormProps) {
       setRole('server');
       setPhoneNumber('');
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Failed to create staff');
+      setError(err instanceof Error ? err.message : 'Failed to add staff member');
+      
     } finally {
       setSubmitting(false);
     }

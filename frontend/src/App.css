@@ -191,6 +191,8 @@ button:disabled {
   }
 }
 
+/* This works with Chrome/Edge but not Firefox etc*/
+
 /* Make entire date/time input clickable */
 input[type="date"],
 input[type="time"] {
