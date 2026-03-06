@@ -1,8 +1,10 @@
 import { useState, useEffect } from 'react';
 import type { Staff, Shift } from './types';
-import { getShifts, getStaff , addStaff} from './api';
+import { getShifts, getStaff , addStaff, addShift, updateShift} from './api';
 import { StaffForm } from './components/StaffForm';
 import { StaffList } from './components/StaffList';
+import { ShiftList } from './components/ShiftList';
+import { ShiftForm } from './components/ShiftForm';
 import './App.css';
 
 function App() {
@@ -45,6 +47,25 @@ function App() {
     setStaff((prev) => [...prev, newStaff]);
 
   }
+
+  const handleAddShift = async (data: {
+    day: string;
+    start_time: string;
+    end_time: string;
+    role: string;
+    staff_id?: number | null;
+  }) => {
+    const newShift = await addShift(data);
+    setShifts((prev) => [...prev, newShift]);
+  };
+
+  const handleUpdateShift = async (shiftId: number, staffId: number | null) => {
+    const updatedShift = await updateShift(shiftId, staffId);
+    setShifts((prev) =>
+      prev.map((s) => (s.id === shiftId ? updatedShift : s))
+    );
+  };
+
   
   if (loading) return <div className="container">Loading...</div>;
   if (error) return <div className="container error">{error}</div>;
@@ -64,8 +85,12 @@ function App() {
 
       <section>
         <h2>Shift Scheduling</h2>
-        <p>Shift count: {shifts.length}</p>
-        {/* ShiftList and ShiftForm go here soon */}
+        <ShiftList
+          shifts={shifts}
+          staff={staff}
+          onAssign={handleUpdateShift}
+        />
+        <ShiftForm staff={staff} onSubmit={handleAddShift} />
       </section>
     </div>
   );
