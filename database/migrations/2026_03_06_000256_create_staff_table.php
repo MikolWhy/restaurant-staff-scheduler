@@ -19,8 +19,10 @@ return new class extends Migration
             # could be bad if we were to add new roles in the future -> downtime. Could use enum class or string in the database.
             $table -> enum ('role', ['server' , 'cook' , 'manager']);
             # business rule is to limit to 10 but leaving room for future flexbility eg: 11 digits for international etc
-            # Increasing to 15 for dashes in case we want that (including right now)
+            # Increasing to 15 for dashes in case we want that (EXCLUDING right now)
+            # because I don't want to use the AI regex for dashes and plus signs. :(
             # p.s to self have to rollback to update the migration :)
+   
             $table -> string('phone_number', 15);
 
         });

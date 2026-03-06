@@ -19,19 +19,19 @@ class DatabaseSeeder extends Seeder
         $steven = Staff::create([
             'name' => 'Steven Sample',
             'role' => 'manager',
-            'phone_number' => '555-0101-1234',
+            'phone_number' => '55501011234',
         ]);
 
         $kevin = Staff::create([
             'name' => 'Kevin Sample',
             'role' => 'server',
-            'phone_number' => '555-010-1234',
+            'phone_number' => '5550101234',
         ]);
 
         $michael = Staff::create([
             'name' => 'Michael Sample',
             'role' => 'cook',
-            'phone_number' => '555-010-1234',
+            'phone_number' => '5550101234',
         ]);
 
           # Create sample shifts
