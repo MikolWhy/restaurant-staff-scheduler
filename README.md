@@ -53,8 +53,9 @@ The date and time fields use native browser inputs (`type="date"` / `type="time"
 
 | Browser | Behaviour |
 |---|---|
-| Chrome (Windows/Linux) | Segement Scroller - click a segment (hour, minute) then type or scroll |
-| Firefox | Free-text field — type directly in `HH:MM` format after clicking |
+| Chrome (Windows/Linux) PREFERRED | Segement Scroller - click anywhere on the field (hour, minute) then scroll |
+
+| Firefox | Free-text field — click directly in `HH:MM` format or on specific segements (hours/minutes/years/etc) to type directly |
 
 
 You can always type directly into the Chrome spinner by clicking the hours segment and typing the digits, then Tab to minutes.
