@@ -68,18 +68,63 @@ You can always type directly into the Chrome spinner by clicking the hours segme
 - Node.js 18+ and npm
 
 ### Setup
+
 ```bash
 # 1. Clone repository
 git clone https://github.com/MikolWhy/restaurant-staff-scheduler.git
 cd restaurant-staff-scheduler
+```
 
-# 2. Start backend containers (PHP, MySQL, nginx)
+```bash
+# 2. Create your .env file from the example template
+cp .env.example .env        # Mac/Linux
+copy .env.example .env      # Windows (Command Prompt)
+```
+
+Open `.env` and update the database section to match the Docker MySQL service.
+Replace the default SQLite block with:
+
+```env
+DB_CONNECTION=mysql
+DB_HOST=db
+DB_PORT=3306
+DB_DATABASE=restaurant_scheduler
+DB_USERNAME=laravel
+DB_PASSWORD=secret
+```
+
+> `DB_HOST=db` refers to the MySQL container name defined in `docker-compose.yml`, not `localhost`.
+
+```bash
+# 3. Start backend containers (PHP, MySQL, Nginx)
 docker compose up -d --build
+```
 
-# 3. Run database migrations and seed sample data (or remove for production)
+```bash
+# 4. Install PHP dependencies (Composer) inside the app container
+docker compose exec app composer install
+```
+
+```bash
+# 5. Generate the Laravel application key (populates APP_KEY in .env)
+docker compose exec app php artisan key:generate
+```
+
+```bash
+# 6. Set write permissions on Laravel's storage and cache directories (Linux/Mac only)
+docker compose exec app chmod -R 775 storage bootstrap/cache
+```
+
+```bash
+# 7. Run database migrations and seed sample data
+#    Wait ~10 seconds after step 3 for MySQL to finish initializing before running this.
+#    Remove --seed to start with an empty database.
 docker compose exec app php artisan migrate --seed
+```
 
-# 4. Install and start frontend
+```bash
+# 8. Install and start the frontend
+#    Open a new terminal window first — npm run dev is a blocking process.
 cd frontend
 npm install
 npm run dev
@@ -98,6 +143,8 @@ npm run dev
 |--------|----------|-------------|
 | GET | /api/staff | List all staff members |
 | POST | /api/staff | Create a staff member |
+| GET | /api/staff/{id} | Get a single staff member with their shifts |
+| DELETE | /api/staff/{id} | Delete a staff member (their shifts become unassigned) |
 | GET | /api/shifts | List all shifts (includes assigned staff) |
 | POST | /api/shifts | Create a shift |
 | PATCH | /api/shifts/{id} | Assign/unassign staff to a shift |
